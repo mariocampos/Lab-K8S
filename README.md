@@ -15,3 +15,19 @@ El Control Plane de Kubernetes consiste en un grupo de daemons que corre en tu c
 
     * __*kubelet*__, el cual se comunica con el Master de Kubernetes.
     * __*kube-proxy*__ ,un proxy de red que implementa los servicios de red de Kubernetes en cada nodo.
+
+## Objetos de Kubernetes
+Los objetivos básicos:
+
+* Pod: Es un set o grupo de uno o más contenedores con almacenamiento/red compartidos.
+* Service
+* Volume
+* Namespace
+
+Además los controladores son:
+
+* ReplicaSet
+* Deployment: Es un template para crear pods
+* StatefulSet
+* DaemonSet
+* Job
