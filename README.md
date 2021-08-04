@@ -7,7 +7,7 @@ El Control Plane de Kubernetes consiste en un grupo de daemons que corre en tu c
 
 - El Master de Kubernetes es un conjunto de tres daemons que se ejecutan en un único nodo del clúster. Los daemons son los siguientes:
 
-    * __*kube-apiserver*__ : 
+    * __*kube-apiserver*__ : El servidor API brinda servicios a las operaciones REST y proporciona la interfaz para el estado compartido del clúster a través del cual interactúan todos los demás componentes.
     * __*kube-controller-manager*__ : Este daemon es que se encarga de conectar con el API del Cloud Provider, como por ejemplo crear instancias, crear load balancer.
     * __*kube-scheduler*__ : 
 
@@ -26,8 +26,8 @@ Los objetivos básicos:
 
 Además los controladores son:
 
-* ReplicaSet
+* ReplicaSet: Es un campo incluido en la cración de Pods que indica el número de replicas requerido. Cuando un ReplicaSet necesita crear nuevos Pods, utiliza su plantilla Pod.
 * Deployment: Es un template para crear pods.
 * StatefulSet: Al igual que en Deployment, getstiona Pods. La diferencia es que mantiene una identidad asociada a sus Pods.
 * DaemonSet: Es un template para crear pods, pero a diferencia de Deployment, crea los pods en cada nodo(mayormente es creado para monitoreo).
-* Job
+* Job: Un Job crea uno o más Pods y se asegura de que un número específico de ellos termina de forma satisfactoria
