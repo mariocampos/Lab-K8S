@@ -20,14 +20,14 @@ El Control Plane de Kubernetes consiste en un grupo de daemons que corre en tu c
 Los objetivos básicos:
 
 * Pod: Es un set o grupo de uno o más contenedores con almacenamiento/red compartidos.
-* Service
-* Volume
-* Namespace
+* Service: Son una forma de poder contactar aplicaciones, ya sea desde dentro del cluster o desde fuera
+* Volume: Como en Docker, es un directorio o un disco que está atado a un Pod y viceversa. Esto puede servir para una base de datos ya que la información no se elimina en caso el Pod sea eliminado.
+* Namespace: Es como una división lógica de tu cluster de Kubernetes que divide: el tráfico, la carga, etc.
 
 Además los controladores son:
 
 * ReplicaSet
-* Deployment: Es un template para crear pods
-* StatefulSet
-* DaemonSet
+* Deployment: Es un template para crear pods.
+* StatefulSet: Al igual que en Deployment, getstiona Pods. La diferencia es que mantiene una identidad asociada a sus Pods.
+* DaemonSet: Es un template para crear pods, pero a diferencia de Deployment, crea los pods en cada nodo(mayormente es creado para monitoreo).
 * Job
