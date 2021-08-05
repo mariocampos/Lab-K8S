@@ -9,7 +9,7 @@ El Control Plane de Kubernetes consiste en un grupo de daemons que corre en tu c
 
     * __*kube-apiserver*__ : El servidor API brinda servicios a las operaciones REST y proporciona la interfaz para el estado compartido del clúster a través del cual interactúan todos los demás componentes.
     * __*kube-controller-manager*__ : Este daemon es que se encarga de conectar con el API del Cloud Provider, como por ejemplo crear instancias, crear load balancer.
-    * __*kube-scheduler*__ : 
+    * __*kube-scheduler*__ : Al crear o escalar aplicaciones, Scheduler determina qué nodos pueden ejecutar la carga de trabajo y los inicia.
 
 - Los restantes nodos no master (workers) en tu clúster, ejecutan los siguientes nodos:
 
