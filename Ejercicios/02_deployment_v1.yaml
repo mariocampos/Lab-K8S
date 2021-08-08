@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Deployment
 metadata:
-  name: hello
+  name: prueba
 spec:
   replicas: 3
   template:
     metadata:
       labels:
-        role: hello
+        role: prueba
     spec:
       containers:
-      - name: hello
+      - name: prueba
         image: gcr.io/google-samples/hello-app:1.0
         ports:
         - containerPort: 8080
