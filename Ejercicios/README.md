@@ -5,7 +5,7 @@ cd Ejercicios
 ## Creación de Namespace
 1. Revisamos el archivo de Namespace clonado:
 ~~~
-vim 000_namespace.yaml
+vim 00_namespace.yaml
 ~~~
 2. Lo cual nos mostrará lo siguiente:
 ~~~
@@ -21,7 +21,7 @@ kubectl apply -f 00_namespace.yaml
 ~~~
 4. Luego de la ejecución anterior nos muestra el siguiente mensaje:
 ~~~
-
+namespace/test created
 ~~~
 5. Validamos
 ~~~
@@ -29,7 +29,13 @@ kubectl get ns
 ~~~
 6. Output
 ~~~
-
+NAME                 STATUS   AGE
+default              Active   2d21h
+kube-node-lease      Active   2d21h
+kube-public          Active   2d21h
+kube-system          Active   2d21h
+local-path-storage   Active   2d21h
+test                 Active   2m18s
 ~~~
 ## Creación de Pod
 1. Revisamos el archivo creado:
@@ -72,16 +78,39 @@ kubectl get deployment
 ~~~
 2. Ejecutamos la siguiente línea de comando para crear el Deployment
 ~~~
-kubectl create deployment apache --image=httpd --port=8080
+kubectl create deployment apache --image=httpd --port=8080 --namespace=test
 deployment.apps/apache created
 ~~~
 3. Validamos lo creado
 ~~~
-kubectl get all
+kubectl get deployments -n test
 ~~~
 4. Output
 ~~~
-
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+apache   1/1     1            1           2m
+~~~
+5. A modo de prueba, escalaré de uno a dos pods. Esto para balancear la carga.
+~~~
+kubectl get pods -n test
+~~~
+6. Output
+~~~
+NAME                      READY   STATUS    RESTARTS   AGE
+apache-748c6cf475-2422z   1/1     Running   0          116s
+~~~
+7. Ejecutamos lo siguiente para escalar los pods
+~~~
+kubectl -n test scale deployment apache --replicas 2
+deployment.apps/apache scaled
+~~~
+>Aumentamos de 1 a 2 pods; en caso se quiera tenes más de 2 replicas aumentar
+8. Validamos
+~~~
+kubectl -n test get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+apache-748c6cf475-2422z   1/1     Running   0          36m
+apache-748c6cf475-zkb65   1/1     Running   0          117s
 ~~~
 #### Deployment v2
 1. Luego de validar el deplyment anterior, lo eliminamos para realizar otra forma de crear un deplyment
@@ -95,16 +124,19 @@ vi 02_deployment_v1.yaml
 ~~~
 3. Lo cual nos mostrará lo siguiente
 ~~~
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hello
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      app: hello
   template:
     metadata:
       labels:
-        role: hello
+        app: hello
     spec:
       containers:
       - name: hello
@@ -114,9 +146,9 @@ spec:
 ~~~
 4. Ejecutamos el siguiente comando:
 ~~~
-kubectl apply -f 02_deployment_v1.yaml
+kubectl apply -f 02_deployment_v1.yaml -n test
 ~~~
 5. Output
 ~~~
-de
+deployment.apps/hello created
 ~~~
