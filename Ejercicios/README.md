@@ -127,19 +127,19 @@ vi 02_deployment_v1.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello
+  name: prueba
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: hello
+      app: prueba
   template:
     metadata:
       labels:
-        app: hello
+        app: prueba
     spec:
       containers:
-      - name: hello
+      - name: prueba
         image: gcr.io/google-samples/hello-app:1.0
         ports:
         - containerPort: 8080
