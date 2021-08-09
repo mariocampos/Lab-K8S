@@ -59,16 +59,22 @@ D:\prueba\kind.exe
 ### Para Mac y Windows
 Ejecutar el siguiente comando para validar lo instalado:
 ~~~
-kind create cluster
+kind create cluster --config config_cluster.yaml
 ~~~
 Output
 ~~~
 Creating cluster "kind" ...
  ✓ Ensuring node image (kindest/node:v1.21.1) 🖼 
+ ✓ Ensuring node image (kindest/node:v1.21.1) 🖼 
+ ✓ Preparing nodes 📦 
  ✓ Preparing nodes 📦  
+ ✓ Writing configuration 📜
  ✓ Writing configuration 📜 
+ ✓ Starting control-plane 🕹️
  ✓ Starting control-plane 🕹️ 
  ✓ Installing CNI 🔌 
+ ✓ Installing CNI 🔌 
+ ✓ Installing StorageClass 💾
  ✓ Installing StorageClass 💾 
 Set kubectl context to "kind-kind"
 You can now use your cluster with:
@@ -82,4 +88,6 @@ Validamos
 mariocb@localhost Lab-K8S % kubectl get nodes
 NAME                 STATUS   ROLES                  AGE     VERSION
 kind-control-plane   Ready    control-plane,master   2m26s   v1.21.1
+kind-worker          Ready    <none>                 2m26s   v1.21.1
+kind-worker2         Ready    <none>                 2m26s   v1.21.1
 ~~~

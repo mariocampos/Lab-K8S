@@ -160,3 +160,38 @@ prueba-6494bff58c-5kqv4   1/1     Running   0          14s
 prueba-6494bff58c-dcdnq   1/1     Running   0          14s
 prueba-6494bff58c-mp97h   1/1     Running   0          14s
 ~~~
+## Creacion de DaemonSet
+1. Revisamos el archivo que clonamos:
+~~~
+vi 03_daemontset.yaml
+~~~
+2. Output
+~~~
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-ds
+spec:
+  template:
+    metadata:
+      labels:
+        name: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: gcr.io/google-containers/fluentd-elasticsearch:1.20
+  selector:
+    matchLabels:
+      name: fluentd
+~~~
+3. Ejecutamos lo siguiente:
+~~~
+kubectl apply -f 03_daemontset.yaml
+daemonset.apps/fluentd-ds created
+~~~
+4. Validamos:
+~~~
+kubectl get pods -o wide
+
+~~~
+>En la parte de *node* nos damos cuenta que la ejecución del DaemonSet a creado cada pod en cada nodo.
