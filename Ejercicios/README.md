@@ -152,3 +152,11 @@ kubectl apply -f 02_deployment_v1.yaml -n test
 ~~~
 deployment.apps/hello created
 ~~~
+6. Validamos
+~~~
+kubectl -n test get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+prueba-6494bff58c-5kqv4   1/1     Running   0          14s
+prueba-6494bff58c-dcdnq   1/1     Running   0          14s
+prueba-6494bff58c-mp97h   1/1     Running   0          14s
+~~~
