@@ -1,5 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
+metadata:
+  name: my-csi-test
 spec:
   selector:
     matchLabels:
@@ -9,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        apps: prueba
+        app: prueba
     spec:
       containers:
       - name: my-test
@@ -18,9 +20,9 @@ spec:
         - sleep
         - infinity
         volumeMounts:
-        - mountPath: "C:\Users\MCAMPOBE\Documents\k8s\K8s_v6\Lab-K8S\index.html"
+        - mountPath: "/Users/mariocb/prueba"
           name: csi-pvc
-  volumeClainTemplates:
+  volumeClaimTemplates:
   - metadata:
       name: csi-pvc
     spec:
