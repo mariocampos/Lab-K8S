@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+spec:
+  selector:
+    matchLabels:
+      app: prueba
+  serviceName: "my-test"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        apps: prueba
+    spec:
+      containers:
+      - name: my-test
+        image: busybox
+        args:
+        - sleep
+        - infinity
+        volumeMounts:
+        - mountPath: "C:\Users\MCAMPOBE\Documents\k8s\K8s_v6\Lab-K8S\index.html"
+          name: csi-pvc
+  volumeClainTemplates:
+  - metadata:
+      name: csi-pvc
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 4Gi
