@@ -192,6 +192,8 @@ daemonset.apps/fluentd-ds created
 4. Validamos:
 ~~~
 kubectl get pods -o wide
-
+NAME               READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+fluentd-ds-5672j   1/1     Running   0          77s   10.244.2.4   kind-worker2   <none>           <none>
+fluentd-ds-kzmt8   1/1     Running   0          77s   10.244.1.4   kind-worker    <none>           <none>
 ~~~
 >En la parte de *node* nos damos cuenta que la ejecución del DaemonSet a creado cada pod en cada nodo.
