@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prueba
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: prueba
+  template:
+    metadata:
+      labels:
+        app: prueba
+    spec:
+      containers:
+      - name: prueba
+        image: gcr.io/google-samples/hello-app:1.0
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 5000
+  selector:
+    run: my-nginx

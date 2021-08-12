@@ -197,3 +197,101 @@ fluentd-ds-5672j   1/1     Running   0          77s   10.244.2.4   kind-worker2 
 fluentd-ds-kzmt8   1/1     Running   0          77s   10.244.1.4   kind-worker    <none>           <none>
 ~~~
 >En la parte de *node* nos damos cuenta que la ejecución del DaemonSet a creado cada pod en cada nodo.
+## Creación de StatefulSet
+1. Revisamos el archivo:
+~~~
+vim 04_statefulset.yaml
+~~~
+2. Revisamos dentro del archivo:
+~~~
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-csi-test
+spec:
+  selector:
+    matchLabels:
+      app: prueba
+  serviceName: "my-test"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prueba
+    spec:
+      containers:
+      - name: my-test
+        image: busybox
+        args:
+        - sleep
+        - infinity
+        volumeMounts:
+        - mountPath: "/Users/mariocb/prueba"
+          name: csi-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: csi-pvc
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 4Gi
+~~~
+3. Ejecutamos:
+~~~
+kubectl apply -f 04_statefulset.yaml
+~~~
+## Creación de Servicio ClusterIP
+1. Revisamos el archivo clonado:
+~~~
+vim 05_service-clusterip.yml
+~~~
+2. Dentro de ello:
+~~~
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prueba
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: prueba
+  template:
+    metadata:
+      labels:
+        app: prueba
+    spec:
+      containers:
+      - name: prueba
+        image: gcr.io/google-samples/hello-app:1.0
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-nginx
+~~~
+3. Ejecutamos:
+~~~
+kubectl apply -f 05_service-clusterip.yml
+deployment.apps/prueba created
+service/my-nginx created
+~~~
+4. Validamos:
+~~~
+kubectl get all
+
+~~~
+## Creación de Node Port
