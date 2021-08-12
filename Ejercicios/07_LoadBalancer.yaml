@@ -6,11 +6,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: prueba
+      role: prueba
   template:
     metadata:
       labels:
-        app: prueba
+        role: prueba
     spec:
       containers:
       - name: prueba
@@ -22,10 +22,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-nginx
+  name: prueba
 spec:
   type: LoadBalancer
   ports:
   - port: 8080
+    targetPort: 8080
   selector:
-    run: my-nginx
+    role: prueba
