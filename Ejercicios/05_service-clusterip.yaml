@@ -6,11 +6,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: prueba
+      role: prueba #Con este rol indicamos que todos los pods que tengan el mismo rol en el servicio, reciban el tráfico
   template:
     metadata:
       labels:
-        app: prueba
+        role: prueba
     spec:
       containers:
       - name: prueba
@@ -22,12 +22,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-nginx
-  labels:
-    run: my-nginx
+  name: prueba
 spec:
   ports:
-  - port: 80
-    protocol: TCP
+  - port: 8080
+    targetPort: 8080
   selector:
-    run: my-nginx
+    role: prueba
