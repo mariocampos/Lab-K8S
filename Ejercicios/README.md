@@ -257,11 +257,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: prueba
+      role: prueba #Con este rol indicamos que todos los pods que tengan el mismo rol en el servicio, reciban el tráfico
   template:
     metadata:
       labels:
-        app: prueba
+        role: prueba
     spec:
       containers:
       - name: prueba
@@ -273,15 +273,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-nginx
-  labels:
-    run: my-nginx
+  name: prueba
 spec:
   ports:
-  - port: 80
-    protocol: TCP
+  - port: 8080
+    targetPort: 8080
   selector:
-    run: my-nginx
+    role: prueba
 ~~~
 3. Ejecutamos:
 ~~~
@@ -291,7 +289,157 @@ service/my-nginx created
 ~~~
 4. Validamos:
 ~~~
-kubectl get all
-
+kubectl get pods -o wide
+NAME                      READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
+prueba-59d6df9b96-cm45q   1/1     Running   0          16m   10.244.1.11   kind-worker    <none>           <none>
+prueba-59d6df9b96-wk82j   1/1     Running   0          16m   10.244.1.12   kind-worker    <none>           <none>
+prueba-59d6df9b96-zwr6m   1/1     Running   0          16m   10.244.2.11   kind-worker2   <none>           <none>
+~~~
+5. Revisamos los Endpoints del servicio ClusterIP:
+~~~
+kubectl describe svc prueba
+Name:              prueba
+Namespace:         default
+Labels:            <none>
+Annotations:       <none>
+Selector:          role=prueba
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.96.57.230
+IPs:               10.96.57.230
+Port:              <unset>  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.244.1.11:8080,10.244.1.12:8080,10.244.2.11:8080
+Session Affinity:  None
+Events:            <none>
 ~~~
 ## Creación de Node Port
+1. Revisamos el archivo a ejecutar:
+~~~
+vim 06_service-nodePort.yaml
+~~~
+2. Output:
+~~~
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prueba
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      role: prueba
+  template:
+    metadata:
+      labels:
+        role: prueba
+    spec:
+      containers:
+      - name: prueba
+        image: gcr.io/google-samples/hello-app:1.0
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prueba
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30000
+  selector:
+    role: prueba
+~~~
+3. Ejecutamos el archivo yaml
+~~~
+kubectl apply -f 06_service-nodePort.yaml
+deployment.apps/prueba unchanged
+service/prueba created
+~~~
+4. Validamos
+~~~
+kubectl get all
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/prueba-59d6df9b96-bpss6   1/1     Running   0          49s
+pod/prueba-59d6df9b96-c7s9z   1/1     Running   0          49s
+pod/prueba-59d6df9b96-cd5n4   1/1     Running   0          49s
+
+NAME                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP   10.96.0.1     <none>        443/TCP          2d17h
+service/prueba       NodePort    10.96.101.9   <none>        8080:30000/TCP   11s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/prueba   3/3     3            3           49s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/prueba-59d6df9b96   3         3         3       49s
+~~~
+## Creación de LoadBalancer
+1. Revisamos el archivo
+~~~
+vim 07_LoadBalancer.yaml
+~~~
+2. Obtenemos
+~~~
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prueba
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      role: prueba
+  template:
+    metadata:
+      labels:
+        role: prueba
+    spec:
+      containers:
+      - name: prueba
+        image: gcr.io/google-samples/hello-app:1.0
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prueba
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    role: prueba
+~~~
+3. Aplicamos el yaml:
+~~~
+kubectl apply -f 07_LoadBalancer.yaml
+deployment.apps/prueba created
+service/prueba created
+~~~
+4. Validamos
+~~~
+kubectl get all
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/prueba-59d6df9b96-4wmmt   1/1     Running   0          12s
+pod/prueba-59d6df9b96-7lh6z   1/1     Running   0          12s
+pod/prueba-59d6df9b96-z6r8r   1/1     Running   0          12s
+
+NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP          2d17h
+service/prueba       LoadBalancer   10.96.148.199   <pending>     8080:31246/TCP   12s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/prueba   3/3     3            3           12s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/prueba-59d6df9b96   3         3         3       12s
+~~~
